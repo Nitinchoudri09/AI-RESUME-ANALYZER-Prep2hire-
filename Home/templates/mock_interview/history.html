@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview History - Prep2Hire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .interview-card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .interview-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .interview-info p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .rating-badge {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Interview History</h1>
+            <p>View all your past mock interviews</p>
+        </div>
+        
+        {% if interviews %}
+            {% for interview in interviews %}
+            <div class="interview-card">
+                <div class="interview-info">
+                    <h3>{{ interview.job_role }}</h3>
+                    <p><strong>Status:</strong> {{ interview.get_status_display }}</p>
+                    <p><strong>Date:</strong> {{ interview.created_at|date:"F d, Y" }}</p>
+                    {% if interview.completed_at %}
+                    <p><strong>Completed:</strong> {{ interview.completed_at|date:"F d, Y" }}</p>
+                    {% endif %}
+                </div>
+                <div style="text-align: right;">
+                    {% if interview.overall_rating %}
+                    <div class="rating-badge" style="margin-bottom: 15px;">{{ interview.overall_rating|floatformat:1 }}/10</div>
+                    {% endif %}
+                    <a href="{% url 'results' interview.id %}" class="btn btn-primary">View Results</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h2>No interviews yet</h2>
+                <p>Start your first mock interview to see your history here.</p>
+                <a href="{% url 'start_interview' %}" class="btn btn-primary" style="margin-top: 20px;">Start Interview</a>
+            </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{% url 'start_interview' %}" class="btn btn-primary">Start New Interview</a>
+            <a href="{% url 'dashboard' %}" class="btn" style="background: #6c757d; color: white; margin-left: 10px;">Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
+

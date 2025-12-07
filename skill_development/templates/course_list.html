@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Udemy Courses</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb; /* light gray background */
+            color: #1e40af; /* deep blue font color */
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1250px; /* smaller container for 2 cards nicely */
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.1);
+            padding: 36px 40px;
+        }
+
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.8rem;
+            margin-top: 0;
+            margin-bottom: 36px;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 12px;
+            text-align: center;
+            color: #1e40af;
+        }
+
+        /* Grid container for courses */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+            gap: 24px;
+        }
+
+        .course {
+            border: 2px solid #1e40af;
+            border-radius: 14px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 14px rgba(30, 64, 175, 0.12);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .course:hover {
+            box-shadow: 0 8px 28px rgba(30, 64, 175, 0.25);
+            transform: translateY(-4px);
+        }
+
+        .course h2 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        .course p {
+            font-size: 0.95rem;
+            margin: 0 0 14px 0;
+            color: #334155;
+            flex-grow: 1;
+        }
+
+        .course img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.1);
+            object-fit: cover;
+        }
+
+        .course a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #1e40af;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            user-select: none;
+            align-self: flex-start;
+        }
+
+        .course a:hover,
+        .course a:focus {
+            background-color: #2563eb;
+            outline: none;
+            text-decoration: none;
+        }
+
+        p.no-courses {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-top: 60px;
+        }
+
+        /* Responsive: stack cards on small screens */
+        @media (max-width: 600px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Courses by Instructor</h1>
+
+        {% if courses %}
+            <div class="courses-grid">
+                {% for course in courses %}
+                    <div class="course">
+                        <h2>{{ course.title }}</h2>
+                        <p>{{ course.headline }}</p>
+                        <img src="{{ course.image_480x270 }}" alt="{{ course.title }}">
+                        <p><a href="https://www.udemy.com{{ course.url }}" target="_blank" rel="noopener noreferrer">View Course</a></p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-courses">No courses found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

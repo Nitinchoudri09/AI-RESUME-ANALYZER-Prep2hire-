@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Preview - Prep2Hire</title>
+    <style>
+        {{ template_css|safe }}
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .preview-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 5px 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn-print {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-download {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-download:hover {
+            background: #218838;
+        }
+        
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        @media print {
+            .actions {
+                display: none;
+            }
+            .preview-container {
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div id="resume-content">
+            {{ template_html|safe }}
+        </div>
+        
+        <div class="actions">
+            <a href="{% url 'resume_analyzer:download_resume' resume.id %}" class="btn btn-download">📥 Download Resume (HTML)</a>
+            <button class="btn btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+            <a href="{% url 'resume_analyzer:create_resume' resume.template.id %}" class="btn btn-edit">✏️ Edit Resume</a>
+            <a href="{% url 'resume_analyzer:resume_templates' %}" class="btn btn-back">← Back to Templates</a>
+        </div>
+    </div>
+    
+</body>
+</html>
+
