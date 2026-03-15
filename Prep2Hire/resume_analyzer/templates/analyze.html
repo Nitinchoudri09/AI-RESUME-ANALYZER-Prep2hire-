@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>AI Resume Analyzer</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb; /* very light gray */
+            color: #1e293b; /* dark slate blue */
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.15);
+            padding: 32px 36px;
+        }
+
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.6rem;
+            margin-top: 0;
+            margin-bottom: 24px;
+            color: #1e3a8a; /* bright blue */
+            text-align: center;
+            border-bottom: 3px solid #1e3a8a; /* lighter blue underline */
+            padding-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        form p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 1rem;
+            border: 2px solid #cbd5e1; /* light border */
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input[type="file"]:focus,
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 6px #3b82f6aa;
+        }
+
+        button[type="submit"] {
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 14px 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            user-select: none;
+        }
+
+        button[type="submit"]:hover,
+        button[type="submit"]:focus {
+            background-color: #1d4ed8;
+            outline: none;
+        }
+
+        h2, h3 {
+            font-family: 'Roboto', sans-serif;
+            color: #1e40af;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        ul {
+            padding-left: 20px;
+            color: #475569;
+            font-size: 1rem;
+            margin-top: 0;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Resume Analyzer</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Analyze</button>
+        </form>
+
+        {% if score %}
+            <h2>Match Score: {{ score }}%</h2>
+        {% endif %}
+
+        {% if suggestions %}
+            <h3>Suggestions to Improve:</h3>
+            <ul>
+                {% for advice in suggestions %}
+                    <li>{{ advice }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>

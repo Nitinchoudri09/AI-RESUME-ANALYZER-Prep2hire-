@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>{{ quiz.title }}</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9fafb;
+    color: #1e40af;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 720px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.1);
+    padding: 36px 40px;
+  }
+  h2 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 2.8rem;
+    margin-top: 0;
+    margin-bottom: 36px;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 12px;
+    color: #1e40af;
+  }
+  form {
+    margin-bottom: 32px;
+  }
+  .question-block {
+    margin-bottom: 20px;
+  }
+  .question-block p {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  label {
+    cursor: pointer;
+    user-select: none;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1rem;
+    color: #334155;
+  }
+  input[type="radio"]:disabled + span {
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+  input[type="radio"] {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  button[type="submit"] {
+    background-color: #1e40af;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  button[type="submit"]:hover {
+    background-color: #2563eb;
+  }
+  hr {
+    border: none;
+    border-top: 2px solid #2563eb;
+    margin: 32px 0;
+  }
+  h3, h4 {
+    color: #1e40af;
+  }
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  ul li {
+    margin-bottom: 20px;
+    background: #e3f2fd;
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 3px 10px rgba(30,64,175,0.1);
+  }
+  ul li strong {
+    color: #1e40af;
+  }
+  .correct {
+    color: green;
+    font-size: 1.3rem;
+  }
+  .incorrect {
+    color: red;
+    font-size: 1.3rem;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>{{ quiz.title }}</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {% for question in questions %}
+        <div class="question-block">
+          <p><strong>{{ forloop.counter }}. {{ question.text }}</strong></p>
+          {% for option in question.options.all %}
+            <label>
+              <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}"
+                {% if submitted %} disabled {% endif %}>
+              <span>{{ option.text }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      {% endfor %}
+
+      {% if not submitted %}
+        <button type="submit">Submit</button>
+      {% endif %}
+    </form>
+
+    {% if submitted %}
+      <hr>
+      <h3>Your Score: {{ score }} / {{ total }}</h3>
+      <h4>Result Breakdown:</h4>
+      <ul>
+        {% for res in results %}
+          <li>
+            <strong>Q:</strong> {{ res.question }}<br>
+            <strong>Your Answer:</strong> {{ res.selected }}<br>
+            <strong>Correct:</strong> {{ res.correct_option }}<br>
+            {% if res.is_correct %}
+              <span class="correct">✅ Correct</span>
+            {% else %}
+              <span class="incorrect">❌ Incorrect</span>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</body>
+</html>

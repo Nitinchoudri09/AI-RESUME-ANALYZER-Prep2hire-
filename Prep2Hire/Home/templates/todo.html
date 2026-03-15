@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple To-Do List</title>
+  <style>
+    
+    .todo-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    .todo-title {
+      color: #1e40af;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .todo-form {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid #1e40af;
+      border-radius: 5px 0 0 5px;
+      outline: none;
+    }
+    input[type="text"]:focus {
+      border-color: #2563eb;
+    }
+    .todo-button {
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 1rem;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .todo-button:hover {
+      background-color: #2563eb;
+    }
+    .todo-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    .todo-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #e0e7ff;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    .todo-list li.completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    .actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      margin-left: 10px;
+      color: #1e40af;
+      transition: color 0.3s ease;
+    }
+    .actions button:hover {
+      color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="todo-container">
+    <h1 class="todo-title">My To-Do List</h1>
+    <form id="todo-form" class="todo-form">
+      <input type="text" id="todo-input" class="todo-input" placeholder="Add a new task..." required />
+      <button type="submit" class="todo-button">Add</button>
+    </form>
+    <ul id="todo-list" class="todo-list"></ul>
+  </div>
+
+  <script>
+    const form = document.getElementById('todo-form');
+    const input = document.getElementById('todo-input');
+    const list = document.getElementById('todo-list');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const taskText = input.value.trim();
+      if(taskText !== '') {
+        addTask(taskText);
+        input.value = '';
+        input.focus();
+      }
+    });
+
+    function addTask(text) {
+      const li = document.createElement('li');
+
+      const taskSpan = document.createElement('span');
+      taskSpan.textContent = text;
+      taskSpan.style.flexGrow = "1";
+      taskSpan.style.cursor = "pointer";
+
+      // Toggle completed on click
+      taskSpan.addEventListener('click', () => {
+        li.classList.toggle('completed');
+      });
+
+      // Actions container
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+
+      // Delete button
+      const deleteBtn = document.createElement('button');
+      deleteBtn.innerHTML = '🗑️';
+      deleteBtn.title = "Delete task";
+      deleteBtn.addEventListener('click', () => {
+        list.removeChild(li);
+      });
+
+      actions.appendChild(deleteBtn);
+      li.appendChild(taskSpan);
+      li.appendChild(actions);
+
+      list.appendChild(li);
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Submission {{ submission.id }} - {{ submission.get_status_display }}</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb; /* light gray */
+            color: #1e293b; /* dark slate */
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.15);
+            padding: 32px 36px;
+        }
+
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.4rem;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #2563eb;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+
+        p {
+            font-size: 1rem;
+            margin: 8px 0 24px;
+            color: #475569;
+        }
+
+        h3 {
+            font-family: 'Roboto', sans-serif;
+            color: #1e40af;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 24px;
+        }
+
+        ul li {
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(100, 116, 139, 0.1);
+        }
+
+        ul li pre {
+            background-color: #e0e7ff;
+            border-radius: 8px;
+            padding: 10px 14px;
+            overflow-x: auto;
+            font-family: 'Fira Mono', monospace, monospace;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            white-space: pre-wrap;
+            color: #1e293b;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        a:hover,
+        a:focus {
+            color: #1e40af;
+            outline: none;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Submission {{ submission.id }} - {{ submission.get_status_display }}</h1>
+        <p>Runtime: {{ submission.runtime }}s</p>
+
+        <h3>Details</h3>
+        <ul>
+          {% for d in details %}
+            <li>
+              TC {{ d.tc_id }} — {{ d.verdict }} ({{ d.time }}s)
+              <pre>stdout:
+{{ d.stdout }}</pre>
+              <pre>stderr:
+{{ d.stderr }}</pre>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <p><a href="{% url 'judge:problem_detail' slug=submission.problem.slug %}">Back to problem</a></p>
+    </div>
+</body>
+</html>

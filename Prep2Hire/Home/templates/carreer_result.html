@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Career Recommendation</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4fb;
+      color: #121212; /* Dark black text */
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .career-container {
+      background-color: #ffffff;
+      border: 2px solid #1e3a8a; /* Deep blue border */
+      border-radius: 12px;
+      padding: 30px 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 6px 15px rgba(30, 58, 138, 0.3);
+    }
+
+    h2 {
+      color: #1e3a8a; /* Blue shade */
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+      border-bottom: 3px solid #2563eb; /* brighter blue underline */
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      color: #0f172a; /* very dark blue/black */
+      font-weight: 600;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 18px;
+      color: #1e293b; /* dark slate blue */
+    }
+
+    strong {
+      color: #1e40af; /* medium blue for emphasis */
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 22px;
+      background-color: #1e40af; /* blue background */
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+
+    a:hover {
+      background-color: #2563eb; /* lighter blue on hover */
+    }
+  </style>
+</head>
+<body>
+  <div class="career-container">
+    <h2>Your Recommended Career Path:</h2>
+    <h3>{{ suggestion.career }}</h3>
+    <p><strong>Description:</strong> {{ suggestion.description }}</p>
+    <p><strong>Skills Required:</strong> {{ suggestion.skills_required }}</p>
+    <a href="/">Back to Home</a>
+  </div>
+</body>
+</html>
