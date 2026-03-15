@@ -1,0 +1,263 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Interview - {{ interview.job_role }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+        }
+        
+        .question-card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .question-number {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-submit:hover {
+            background: #5568d3;
+        }
+        
+        .btn-complete {
+            background: #28a745;
+            color: white;
+            margin-top: 20px;
+        }
+        
+        .btn-complete:hover {
+            background: #218838;
+        }
+        
+        .feedback-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .feedback-section.show {
+            display: block;
+        }
+        
+        .rating {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .feedback-item {
+            margin-bottom: 15px;
+        }
+        
+        .feedback-item h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .feedback-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .strengths {
+            color: #28a745;
+        }
+        
+        .improvements {
+            color: #dc3545;
+        }
+        
+        .answered-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mock Interview: {{ interview.job_role }}</h1>
+            <p>Answer each question to the best of your ability. You'll receive instant AI feedback!</p>
+        </div>
+        
+        {% for question in questions %}
+        <div class="question-card" id="question-{{ question.id }}">
+            <div class="question-number">Question {{ question.question_number }} of {{ questions.count }}</div>
+            {% if question.id in answered_questions %}
+            <span class="answered-badge">✓ Answered</span>
+            {% endif %}
+            <div class="question-text">{{ question.question_text }}</div>
+            
+            <form class="answer-form" data-question-id="{{ question.id }}">
+                {% csrf_token %}
+                <textarea name="answer" placeholder="Type your answer here..." required>{% if question.response %}{{ question.response.answer_text }}{% endif %}</textarea>
+                <button type="submit" class="btn btn-submit">Submit Answer</button>
+            </form>
+            
+            {% if question.response %}
+            <div class="feedback-section show">
+                <div class="rating">Rating: {{ question.response.rating }}/10</div>
+                <div class="feedback-item">
+                    <h4>Feedback:</h4>
+                    <p>{{ question.response.feedback }}</p>
+                </div>
+                <div class="feedback-item strengths">
+                    <h4>Strengths:</h4>
+                    <p>{{ question.response.strengths|linebreaks }}</p>
+                </div>
+                <div class="feedback-item improvements">
+                    <h4>Areas for Improvement:</h4>
+                    <p>{{ question.response.improvements|linebreaks }}</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="feedback-section" id="feedback-{{ question.id }}"></div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        <form method="post" action="{% url 'complete_interview' interview.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-complete">Complete Interview & View Results</button>
+        </form>
+    </div>
+    
+    <script>
+        document.querySelectorAll('.answer-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const questionId = this.dataset.questionId;
+                const answer = this.querySelector('textarea[name="answer"]').value;
+                const feedbackDiv = document.getElementById('feedback-' + questionId);
+                
+                fetch('', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': this.querySelector('[name=csrfmiddlewaretoken]').value,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `question_id=${questionId}&answer=${encodeURIComponent(answer)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        feedbackDiv.innerHTML = `
+                            <div class="rating">Rating: ${data.rating}/10</div>
+                            <div class="feedback-item">
+                                <h4>Feedback:</h4>
+                                <p>${data.feedback}</p>
+                            </div>
+                            <div class="feedback-item strengths">
+                                <h4>Strengths:</h4>
+                                <p>${data.strengths.replace(/\n/g, '<br>')}</p>
+                            </div>
+                            <div class="feedback-item improvements">
+                                <h4>Areas for Improvement:</h4>
+                                <p>${data.improvements.replace(/\n/g, '<br>')}</p>
+                            </div>
+                        `;
+                        feedbackDiv.classList.add('show');
+                        
+                        // Add answered badge
+                        const card = document.getElementById('question-' + questionId);
+                        if (!card.querySelector('.answered-badge')) {
+                            const badge = document.createElement('span');
+                            badge.className = 'answered-badge';
+                            badge.textContent = '✓ Answered';
+                            card.querySelector('.question-number').after(badge);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

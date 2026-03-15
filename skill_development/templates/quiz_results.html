@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Your Quiz Results</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9fafb;
+    color: #1e40af;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 960px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.1);
+    padding: 36px 40px;
+  }
+
+  h2 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 2.8rem;
+    margin-top: 0;
+    margin-bottom: 36px;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 12px;
+    text-align: center;
+    color: #1e40af;
+  }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+  }
+
+  canvas {
+    background: #e3f2fd;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(30, 64, 175, 0.12);
+    padding: 16px;
+    max-width: 100%;
+    height: auto !important;
+  }
+
+  @media (max-width: 640px) {
+    .container {
+      padding: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Your Quiz Results</h2>
+    <div class="charts-grid">
+      <canvas id="barChart" width="400" height="300"></canvas>
+      <canvas id="lineChart" width="400" height="300"></canvas>
+      <canvas id="pieChart" width="400" height="300"></canvas>
+      <canvas id="doughnutChart" width="400" height="300"></canvas>
+      <canvas id="radarChart" width="400" height="300"></canvas>
+      <canvas id="polarChart" width="400" height="300"></canvas>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const labels = [{% for r in results %}'{{ r.quiz.title }}',{% endfor %}];
+    const scores = [{% for r in results %}{{ r.score }},{% endfor %}];
+
+    new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Score',
+          data: scores,
+          backgroundColor: 'rgba(75, 192, 192, 0.6)'
+        }]
+      }
+    });
+
+    new Chart(document.getElementById('lineChart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Score',
+          data: scores,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          fill: false,
+          tension: 0.3
+        }]
+      }
+    });
+
+    new Chart(document.getElementById('pieChart'), {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: scores,
+          backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#9ccc65', '#ba68c8']
+        }]
+      }
+    });
+
+    new Chart(document.getElementById('doughnutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: scores,
+          backgroundColor: ['#4bc0c0', '#ff9f40', '#9966ff', '#ff6384', '#36a2eb']
+        }]
+      }
+    });
+
+    new Chart(document.getElementById('radarChart'), {
+      type: 'radar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Score',
+          data: scores,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)'
+        }]
+      }
+    });
+
+    new Chart(document.getElementById('polarChart'), {
+      type: 'polarArea',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: scores,
+          backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff']
+        }]
+      }
+    });
+  </script>
+</body>
+</html>

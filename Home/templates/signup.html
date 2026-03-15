@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Signup</title>
+
+  <!-- Google Fonts: Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      margin: 0;
+      background: #f9fafb; /* light gray background */
+      font-family: 'Montserrat', sans-serif;
+      color: #1e40af; /* main blue */
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    .signup-container {
+      background: #ffffff;
+      padding: 3rem 3.5rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(30, 64, 175, 0.15);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      border: 2px solid #1e40af;
+    }
+    h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: #1e40af;
+      letter-spacing: 1px;
+    }
+    form {
+      text-align: left;
+    }
+    form p {
+      margin-bottom: 1rem;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #3b82f6; /* lighter blue */
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      width: 100%;
+      padding: 12px 14px;
+      margin-top: 0.25rem;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      border: 1.5px solid #1e40af;
+      background: #e0e7ff; /* very light blue */
+      color: #1e40af;
+      font-size: 1rem;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+      outline: none;
+      border-color: #2563eb; /* brighter blue */
+      background: #c7d2fe; /* lighter blue */
+    }
+    button[type="submit"] {
+      background: #1e40af;
+      border: none;
+      width: 100%;
+      padding: 14px 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 6px 15px rgba(30, 64, 175, 0.5);
+    }
+    button[type="submit"]:hover {
+      background: #2563eb;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.7);
+    }
+    p.signup-link {
+      margin-top: 1.8rem;
+      font-size: 0.95rem;
+      color: #4f46e5; /* medium blue */
+      text-align: center;
+    }
+    p.signup-link a {
+      color: #1e40af;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    p.signup-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <h2>Create an Account</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Sign Up</button>
+    </form>
+    <p class="signup-link">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,498 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Resume - {{ template.name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .form-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .dynamic-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-add {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+        
+        .btn-add:hover {
+            background: #5568d3;
+        }
+        
+        .btn-remove {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        .btn-remove:hover {
+            background: #c0392b;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 30px;
+            width: 100%;
+        }
+        
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'resume_analyzer:resume_templates' %}" class="back-link">← Back to Templates</a>
+        
+        <div class="header">
+            <h1>Create Your Resume</h1>
+            <p>Template: {{ template.name }} - {{ template.template_type|title }}</p>
+        </div>
+        
+        <form method="post" id="resumeForm">
+            {% csrf_token %}
+            
+            <!-- Personal Information -->
+            <div class="form-section">
+                <h2 class="section-title">Personal Information</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" name="full_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" name="email" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" name="address">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>LinkedIn</label>
+                        <input type="url" name="linkedin">
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub</label>
+                        <input type="url" name="github">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Website</label>
+                    <input type="url" name="website">
+                </div>
+            </div>
+            
+            <!-- Professional Summary -->
+            <div class="form-section">
+                <h2 class="section-title">Professional Summary</h2>
+                <div class="form-group">
+                    <textarea name="summary" rows="4" placeholder="Write a brief summary of your professional background..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Education -->
+            <div class="form-section">
+                <h2 class="section-title">Education</h2>
+                <div id="education-container">
+                    <div class="dynamic-section">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Degree</label>
+                                <input type="text" name="edu_degree[]" placeholder="e.g., Bachelor of Science">
+                            </div>
+                            <div class="form-group">
+                                <label>Institution</label>
+                                <input type="text" name="edu_institution[]" placeholder="e.g., University Name">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="text" name="edu_year[]" placeholder="e.g., 2020-2024">
+                            </div>
+                            <div class="form-group">
+                                <label>GPA (Optional)</label>
+                                <input type="text" name="edu_gpa[]" placeholder="e.g., 3.8/4.0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-add" onclick="addEducation()">+ Add Education</button>
+            </div>
+            
+            <!-- Experience -->
+            <div class="form-section">
+                <h2 class="section-title">Work Experience</h2>
+                <div id="experience-container">
+                    <div class="dynamic-section">
+                        <div class="form-group">
+                            <label>Job Title</label>
+                            <input type="text" name="exp_title[]" placeholder="e.g., Software Engineer">
+                        </div>
+                        <div class="form-group">
+                            <label>Company</label>
+                            <input type="text" name="exp_company[]" placeholder="e.g., Tech Company Inc.">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <input type="text" name="exp_start[]" placeholder="e.g., Jan 2020">
+                            </div>
+                            <div class="form-group">
+                                <label>End Date</label>
+                                <input type="text" name="exp_end[]" placeholder="e.g., Present or Dec 2023">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="exp_desc[]" rows="3" placeholder="Describe your responsibilities and achievements..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-add" onclick="addExperience()">+ Add Experience</button>
+            </div>
+            
+            <!-- Skills -->
+            <div class="form-section">
+                <h2 class="section-title">Skills</h2>
+                <div class="form-group">
+                    <label>Enter skills separated by commas</label>
+                    <input type="text" name="skills_input" placeholder="e.g., Python, JavaScript, React, Django, SQL">
+                </div>
+            </div>
+            
+            <!-- Projects -->
+            <div class="form-section">
+                <h2 class="section-title">Projects</h2>
+                <div id="projects-container">
+                    <div class="dynamic-section">
+                        <div class="form-group">
+                            <label>Project Name</label>
+                            <input type="text" name="proj_name[]" placeholder="e.g., E-Commerce Website">
+                        </div>
+                        <div class="form-group">
+                            <label>Technologies Used</label>
+                            <input type="text" name="proj_tech[]" placeholder="e.g., React, Node.js, MongoDB">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="proj_desc[]" rows="3" placeholder="Describe your project..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Link (Optional)</label>
+                            <input type="url" name="proj_link[]" placeholder="https://...">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-add" onclick="addProject()">+ Add Project</button>
+            </div>
+            
+            <button type="submit" class="btn-submit">Create Resume</button>
+        </form>
+    </div>
+    
+    <script>
+        function addEducation() {
+            const container = document.getElementById('education-container');
+            const newSection = document.createElement('div');
+            newSection.className = 'dynamic-section';
+            newSection.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Degree</label>
+                        <input type="text" name="edu_degree[]" placeholder="e.g., Bachelor of Science">
+                    </div>
+                    <div class="form-group">
+                        <label>Institution</label>
+                        <input type="text" name="edu_institution[]" placeholder="e.g., University Name">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="text" name="edu_year[]" placeholder="e.g., 2020-2024">
+                    </div>
+                    <div class="form-group">
+                        <label>GPA (Optional)</label>
+                        <input type="text" name="edu_gpa[]" placeholder="e.g., 3.8/4.0">
+                    </div>
+                </div>
+                <button type="button" class="btn-remove" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(newSection);
+        }
+        
+        function addExperience() {
+            const container = document.getElementById('experience-container');
+            const newSection = document.createElement('div');
+            newSection.className = 'dynamic-section';
+            newSection.innerHTML = `
+                <div class="form-group">
+                    <label>Job Title</label>
+                    <input type="text" name="exp_title[]" placeholder="e.g., Software Engineer">
+                </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" name="exp_company[]" placeholder="e.g., Tech Company Inc.">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="text" name="exp_start[]" placeholder="e.g., Jan 2020">
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="text" name="exp_end[]" placeholder="e.g., Present or Dec 2023">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="exp_desc[]" rows="3" placeholder="Describe your responsibilities and achievements..."></textarea>
+                </div>
+                <button type="button" class="btn-remove" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(newSection);
+        }
+        
+        function addProject() {
+            const container = document.getElementById('projects-container');
+            const newSection = document.createElement('div');
+            newSection.className = 'dynamic-section';
+            newSection.innerHTML = `
+                <div class="form-group">
+                    <label>Project Name</label>
+                    <input type="text" name="proj_name[]" placeholder="e.g., E-Commerce Website">
+                </div>
+                <div class="form-group">
+                    <label>Technologies Used</label>
+                    <input type="text" name="proj_tech[]" placeholder="e.g., React, Node.js, MongoDB">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="proj_desc[]" rows="3" placeholder="Describe your project..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Link (Optional)</label>
+                    <input type="url" name="proj_link[]" placeholder="https://...">
+                </div>
+                <button type="button" class="btn-remove" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(newSection);
+        }
+        
+        document.getElementById('resumeForm').addEventListener('submit', function(e) {
+            // Collect education data
+            const education = [];
+            const eduDegrees = document.querySelectorAll('input[name="edu_degree[]"]');
+            const eduInstitutions = document.querySelectorAll('input[name="edu_institution[]"]');
+            const eduYears = document.querySelectorAll('input[name="edu_year[]"]');
+            const eduGpas = document.querySelectorAll('input[name="edu_gpa[]"]');
+            
+            for (let i = 0; i < eduDegrees.length; i++) {
+                if (eduDegrees[i].value.trim()) {
+                    education.push({
+                        degree: eduDegrees[i].value,
+                        institution: eduInstitutions[i].value,
+                        year: eduYears[i].value,
+                        gpa: eduGpas[i].value
+                    });
+                }
+            }
+            
+            // Collect experience data
+            const experience = [];
+            const expTitles = document.querySelectorAll('input[name="exp_title[]"]');
+            const expCompanies = document.querySelectorAll('input[name="exp_company[]"]');
+            const expStarts = document.querySelectorAll('input[name="exp_start[]"]');
+            const expEnds = document.querySelectorAll('input[name="exp_end[]"]');
+            const expDescs = document.querySelectorAll('textarea[name="exp_desc[]"]');
+            
+            for (let i = 0; i < expTitles.length; i++) {
+                if (expTitles[i].value.trim()) {
+                    experience.push({
+                        title: expTitles[i].value,
+                        company: expCompanies[i].value,
+                        start: expStarts[i].value,
+                        end: expEnds[i].value,
+                        description: expDescs[i].value
+                    });
+                }
+            }
+            
+            // Collect skills
+            const skillsInput = document.querySelector('input[name="skills_input"]').value;
+            const skills = skillsInput.split(',').map(s => s.trim()).filter(s => s);
+            
+            // Collect projects
+            const projects = [];
+            const projNames = document.querySelectorAll('input[name="proj_name[]"]');
+            const projTechs = document.querySelectorAll('input[name="proj_tech[]"]');
+            const projDescs = document.querySelectorAll('textarea[name="proj_desc[]"]');
+            const projLinks = document.querySelectorAll('input[name="proj_link[]"]');
+            
+            for (let i = 0; i < projNames.length; i++) {
+                if (projNames[i].value.trim()) {
+                    projects.push({
+                        name: projNames[i].value,
+                        technologies: projTechs[i].value,
+                        description: projDescs[i].value,
+                        link: projLinks[i].value
+                    });
+                }
+            }
+            
+            // Add hidden inputs
+            const educationInput = document.createElement('input');
+            educationInput.type = 'hidden';
+            educationInput.name = 'education';
+            educationInput.value = JSON.stringify(education);
+            this.appendChild(educationInput);
+            
+            const experienceInput = document.createElement('input');
+            experienceInput.type = 'hidden';
+            experienceInput.name = 'experience';
+            experienceInput.value = JSON.stringify(experience);
+            this.appendChild(experienceInput);
+            
+            const skillsInput2 = document.createElement('input');
+            skillsInput2.type = 'hidden';
+            skillsInput2.name = 'skills';
+            skillsInput2.value = JSON.stringify(skills);
+            this.appendChild(skillsInput2);
+            
+            const projectsInput = document.createElement('input');
+            projectsInput.type = 'hidden';
+            projectsInput.name = 'projects';
+            projectsInput.value = JSON.stringify(projects);
+            this.appendChild(projectsInput);
+        });
+    </script>
+</body>
+</html>
+

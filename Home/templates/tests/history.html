@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test History - Prep2Hire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .attempt-card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .attempt-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .attempt-info p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .score-badge {
+            background: #667eea;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .score-badge .score {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .score-badge .percentage {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Test History</h1>
+            <p>View all your past test attempts</p>
+        </div>
+        
+        {% if attempts %}
+            {% for attempt in attempts %}
+            <div class="attempt-card">
+                <div class="attempt-info">
+                    <h3>{{ attempt.category.name }}</h3>
+                    <p><strong>Date:</strong> {{ attempt.created_at|date:"F d, Y, g:i A" }}</p>
+                    <p><strong>Questions:</strong> {{ attempt.total_questions }}</p>
+                </div>
+                <div class="score-badge">
+                    <div class="score">{{ attempt.score }}/{{ attempt.total_questions }}</div>
+                    <div class="percentage">{{ attempt.percentage|floatformat:1 }}%</div>
+                </div>
+                <a href="{% url 'test_results' attempt.id %}" class="btn btn-primary">View Details</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h2>No test attempts yet</h2>
+                <p>Start taking tests to see your history here.</p>
+                <a href="{% url 'test_categories' %}" class="btn btn-primary" style="margin-top: 20px;">Take a Test</a>
+            </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{% url 'test_categories' %}" class="btn btn-primary">Take New Test</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="margin-left: 10px;">Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
+
+

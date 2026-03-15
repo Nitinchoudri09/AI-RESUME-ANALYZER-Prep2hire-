@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Results - Prep2Hire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .overall-rating {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        
+        .rating-label {
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .response-card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        .question-rating {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .answer-text {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .feedback-item {
+            margin-bottom: 15px;
+        }
+        
+        .feedback-item h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .feedback-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .strengths {
+            color: #28a745;
+        }
+        
+        .improvements {
+            color: #dc3545;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Interview Results</h1>
+            <p class="rating-label">Job Role: {{ interview.job_role }}</p>
+            <div class="overall-rating">{{ interview.overall_rating|floatformat:1 }}/10</div>
+            <p>Overall Performance Rating</p>
+        </div>
+        
+        {% for response in responses %}
+        <div class="response-card">
+            <div class="question-header">
+                <div class="question-number">Question {{ response.question.question_number }}</div>
+                <div class="question-rating">{{ response.rating }}/10</div>
+            </div>
+            <div class="question-text">{{ response.question.question_text }}</div>
+            <div class="answer-text">
+                <strong>Your Answer:</strong><br>
+                {{ response.answer_text|linebreaks }}
+            </div>
+            <div class="feedback-item">
+                <h4>Feedback:</h4>
+                <p>{{ response.feedback }}</p>
+            </div>
+            <div class="feedback-item strengths">
+                <h4>Strengths:</h4>
+                <p>{{ response.strengths|linebreaks }}</p>
+            </div>
+            <div class="feedback-item improvements">
+                <h4>Areas for Improvement:</h4>
+                <p>{{ response.improvements|linebreaks }}</p>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div style="text-align: center;">
+            <a href="{% url 'start_interview' %}" class="btn btn-primary">Start New Interview</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
+

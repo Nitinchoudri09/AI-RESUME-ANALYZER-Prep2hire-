@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results - Prep2Hire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .score-display {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        
+        .percentage {
+            font-size: 1.5rem;
+            color: #666;
+        }
+        
+        .response-card {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .response-card.correct {
+            border-left: 4px solid #28a745;
+        }
+        
+        .response-card.incorrect {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .status-badge.correct {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-badge.incorrect {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .answer-section {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .answer-section strong {
+            color: #333;
+        }
+        
+        .correct-answer {
+            color: #28a745;
+        }
+        
+        .wrong-answer {
+            color: #dc3545;
+        }
+        
+        .explanation {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #2e7d32;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .actions {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Test Results</h1>
+            <p>{{ attempt.category.name }}</p>
+            <div class="score-display">{{ attempt.score }}/{{ attempt.total_questions }}</div>
+            <div class="percentage">{{ attempt.percentage|floatformat:1 }}%</div>
+        </div>
+        
+        {% for response in responses %}
+        <div class="response-card {% if response.is_correct %}correct{% else %}incorrect{% endif %}">
+            <div class="question-header">
+                <div class="question-number">Question {{ forloop.counter }}</div>
+                <span class="status-badge {% if response.is_correct %}correct{% else %}incorrect{% endif %}">
+                    {% if response.is_correct %}✓ Correct{% else %}✗ Incorrect{% endif %}
+                </span>
+            </div>
+            <div class="question-text">{{ response.question.question_text }}</div>
+            <div class="answer-section">
+                <strong>Your Answer:</strong> 
+                <span class="{% if response.is_correct %}correct-answer{% else %}wrong-answer{% endif %}">
+                    {{ response.selected_option.option_text|default:"Not answered" }}
+                </span>
+            </div>
+            {% if not response.is_correct %}
+            <div class="answer-section">
+                <strong>Correct Answer:</strong> 
+                <span class="correct-answer">
+                    {% for option in response.question.options.all %}
+                        {% if option.is_correct %}{{ option.option_text }}{% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+            {% endif %}
+            {% if response.question.explanation %}
+            <div class="explanation">
+                <strong>Explanation:</strong> {{ response.question.explanation }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        <div class="actions">
+            <a href="{% url 'start_test' attempt.category.id %}" class="btn btn-primary">Retake Test</a>
+            <a href="{% url 'test_categories' %}" class="btn btn-secondary">Back to Categories</a>
+        </div>
+    </div>
+</body>
+</html>
+
