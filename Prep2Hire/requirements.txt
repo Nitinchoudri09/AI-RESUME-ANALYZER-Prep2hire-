@@ -2,3 +2,7 @@ Django==4.2
 gunicorn
 Pillow
 requests
+whitenoise
+dj-database-url
+psycopg2-binary
+python-dotenv
