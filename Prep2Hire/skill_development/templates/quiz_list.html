@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Available Quizzes</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9fafb;
+    color: #1e40af;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1250px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.1);
+    padding: 36px 40px;
+  }
+
+  h2 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 2.8rem;
+    margin-top: 0;
+    margin-bottom: 36px;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 12px;
+    text-align: center;
+    color: #1e40af;
+  }
+
+  .quiz-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+    gap: 24px;
+  }
+
+  .card {
+    border: 2px solid #1e40af;
+    border-radius: 14px;
+    padding: 20px 24px;
+    box-shadow: 0 4px 14px rgba(30, 64, 175, 0.12);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 28px rgba(30, 64, 175, 0.25);
+    transform: translateY(-4px);
+  }
+
+  .card h3 {
+    font-size: 1.6rem;
+    margin-top: 0;
+    margin-bottom: 14px;
+    font-weight: 700;
+    color: #1e40af;
+  }
+
+  .card p {
+    font-size: 1rem;
+    margin: 0 0 18px 0;
+    color: #334155;
+    flex-grow: 1;
+  }
+
+  .card a {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #1e40af;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    user-select: none;
+    align-self: flex-start;
+  }
+
+  .card a:hover,
+  .card a:focus {
+    background-color: #2563eb;
+    outline: none;
+    text-decoration: none;
+  }
+
+  /* Responsive: 1 card per row on small screens */
+  @media (max-width: 720px) {
+    .quiz-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Available Quizzes</h2>
+    <div class="quiz-cards">
+      {% for quiz in quizzes %}
+        <div class="card">
+          <h3>{{ quiz.title }}</h3>
+          <p>{{ quiz.description }}</p>
+          <a href="{% url 'take_quiz' quiz.id %}">Take Quiz</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

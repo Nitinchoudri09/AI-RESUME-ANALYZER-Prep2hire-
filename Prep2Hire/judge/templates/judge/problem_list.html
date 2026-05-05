@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Problems</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4fb;
+            margin: 0;
+            padding: 40px 20px;
+            color: #121212;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            max-width: 1200px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(30, 58, 138, 0.15);
+            padding: 15px 40px;
+            margin:25px auto;
+        }
+
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            color: #1e3a8a; /* dark blue */
+            font-weight: 700;
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 12px;
+        }
+
+         .problems-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* exactly 3 cards per row */
+      gap: 24px;
+  }
+
+        .card {
+            background: #fff;
+            border: 2px solid #1e40af;
+            border-radius: 12px;
+            padding: 24px 28px;
+            box-shadow: 0 8px 24px rgba(30, 58, 138, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: default;
+        }
+
+        .card:hover {
+            box-shadow: 0 16px 36px rgba(30, 58, 138, 0.25);
+            transform: translateY(-6px);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 12px 0;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #475569; /* muted dark slate */
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        a.btn-primary {
+            background-color: #1e40af;
+            color: white;
+            padding: 12px 0;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+            user-select: none;
+        }
+
+        a.btn-primary:hover,
+        a.btn-primary:focus {
+            background-color: #2563eb;
+            outline: none;
+            text-decoration: none;
+        }
+
+        p.no-problems {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Coding Problems</h1>
+
+        {% if problems %}
+            <div class="problems-grid">
+                {% for p in problems %}
+                    <div class="card">
+                        <h5 class="card-title">{{ p.title }}</h5>
+                        <p class="card-text">{{ p.description|truncatechars:100 }}</p>
+                        <a href="{% url 'judge:problem_detail' slug=p.slug %}" class="btn-primary">Solve</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-problems">No problems yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

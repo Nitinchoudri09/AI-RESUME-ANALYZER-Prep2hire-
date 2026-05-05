@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Submission Result | Code Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap");
+
+        :root {
+            --bg:      #0d1117;
+            --panel:   #161b22;
+            --border:  #30363d;
+            --accent:  #2563eb;
+            --green:   #22c55e;
+            --red:     #ef4444;
+            --yellow:  #f59e0b;
+            --text:    #c9d1d9;
+            --dim:     #6e7681;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; border:none; outline:none; }
+        body {
+            font-family: "Inter", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 36px 20px;
+        }
+
+        .page-wrap {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 28px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .back-link:hover { opacity: 0.75; }
+
+        /* ── Header card ── */
+        .result-header {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .verdict-icon {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .verdict-icon.ac  { background: rgba(34,197,94,0.15);  color: var(--green); border: 2px solid rgba(34,197,94,0.3); }
+        .verdict-icon.wa  { background: rgba(239,68,68,0.15);  color: var(--red);   border: 2px solid rgba(239,68,68,0.3); }
+        .verdict-icon.tle { background: rgba(245,158,11,0.15); color: var(--yellow);border: 2px solid rgba(245,158,11,0.3); }
+
+        .result-meta h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .result-meta h1.ac  { color: var(--green); }
+        .result-meta h1.wa  { color: var(--red); }
+        .result-meta h1.tle { color: var(--yellow); }
+
+        .result-meta .sub-info {
+            display: flex;
+            gap: 20px;
+            font-size: 0.82rem;
+            color: var(--dim);
+            flex-wrap: wrap;
+        }
+        .result-meta .sub-info span { display: flex; align-items: center; gap: 6px; }
+        .result-meta .sub-info i { color: var(--accent); }
+
+        /* ── Test Case Cards ── */
+        .tc-section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tc-section-title .count {
+            background: rgba(37,99,235,0.2);
+            border: 1px solid rgba(37,99,235,0.35);
+            color: #60a5fa;
+            font-size: 0.72rem;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .tc-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .tc-card.passed { border-left: 4px solid var(--green); }
+        .tc-card.failed { border-left: 4px solid var(--red); }
+        .tc-card.error  { border-left: 4px solid var(--yellow); }
+
+        .tc-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .tc-header:hover { background: rgba(255,255,255,0.03); }
+
+        .tc-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .tc-badge {
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .tc-badge.pass { background: rgba(34,197,94,0.15);  color: var(--green); border:1px solid rgba(34,197,94,0.3); }
+        .tc-badge.fail { background: rgba(239,68,68,0.15);  color: var(--red);   border:1px solid rgba(239,68,68,0.3); }
+        .tc-badge.err  { background: rgba(245,158,11,0.15); color: var(--yellow);border:1px solid rgba(245,158,11,0.3); }
+
+        .tc-time { font-size: 0.75rem; color: var(--dim); }
+        .tc-toggle { color: var(--dim); font-size: 0.8rem; transition: transform 0.2s; }
+        .tc-toggle.open { transform: rotate(180deg); }
+
+        /* Collapsible body */
+        .tc-body {
+            display: none;
+            padding: 0 20px 18px;
+            border-top: 1px solid var(--border);
+        }
+        .tc-body.open { display: block; }
+
+        /* Grid: Input | Output */
+        .io-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 14px;
+        }
+        .io-block { display: flex; flex-direction: column; gap: 6px; }
+        .io-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--dim);
+        }
+        .io-pre {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-family: "Fira Code", monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #c9d1d9;
+            min-height: 44px;
+        }
+        .io-pre.input-pre    { color: #93c5fd; }
+        .io-pre.output-pre   { color: #a5f3b5; }
+        .io-pre.expected-pre { color: #fde68a; }
+        .io-pre.error-pre    { color: #fca5a5; }
+
+        /* error full-width */
+        .error-block {
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* ── scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+    </style>
+</head>
+<body>
+<div class="page-wrap">
+
+    <a href="javascript:history.back()" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Problem
+    </a>
+
+    <!-- ── Result Header ── -->
+    {% with status=submission.status %}
+    <div class="result-header">
+        {% if status == "AC" %}
+            <div class="verdict-icon ac"><i class="fas fa-check"></i></div>
+            <div class="result-meta">
+                <h1 class="ac">All Test Cases Passed!</h1>
+                <div class="sub-info">
+                    <span><i class="fas fa-hashtag"></i> Submission #{{ submission.id }}</span>
+                    <span><i class="fas fa-clock"></i> {{ submission.runtime|floatformat:4 }}s total runtime</span>
+                    <span><i class="fas fa-trophy"></i> Accepted</span>
+                </div>
+            </div>
+        {% elif status == "WA" %}
+            <div class="verdict-icon wa"><i class="fas fa-times"></i></div>
+            <div class="result-meta">
+                <h1 class="wa">Wrong Answer</h1>
+                <div class="sub-info">
+                    <span><i class="fas fa-hashtag"></i> Submission #{{ submission.id }}</span>
+                    <span><i class="fas fa-clock"></i> {{ submission.runtime|floatformat:4 }}s total runtime</span>
+                    <span><i class="fas fa-exclamation-circle"></i> Some test cases failed</span>
+                </div>
+            </div>
+        {% else %}
+            <div class="verdict-icon tle"><i class="fas fa-hourglass-half"></i></div>
+            <div class="result-meta">
+                <h1 class="tle">{{ submission.get_status_display }}</h1>
+                <div class="sub-info">
+                    <span><i class="fas fa-hashtag"></i> Submission #{{ submission.id }}</span>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% endwith %}
+
+    <!-- ── Test Case Results ── -->
+    <div class="tc-section-title">
+        <i class="fas fa-list-check"></i> Test Cases
+        <span class="count">{{ details|length }} total</span>
+    </div>
+
+    {% for d in details %}
+        {% if d.verdict == "Accepted" %}
+            <div class="tc-card passed">
+        {% elif d.verdict == "Runtime Error" or d.verdict == "TLE" %}
+            <div class="tc-card error">
+        {% else %}
+            <div class="tc-card failed">
+        {% endif %}
+
+            <div class="tc-header" onclick="toggleTC({{ forloop.counter }})">
+                <div class="tc-title">
+                    <span>Test Case {{ forloop.counter }}</span>
+                    {% if d.verdict == "Accepted" %}
+                        <span class="tc-badge pass"><i class="fas fa-check"></i> Accepted</span>
+                    {% elif d.verdict == "TLE" %}
+                        <span class="tc-badge err"><i class="fas fa-hourglass-half"></i> Time Limit</span>
+                    {% elif d.verdict == "Runtime Error" %}
+                        <span class="tc-badge err"><i class="fas fa-bug"></i> Runtime Error</span>
+                    {% else %}
+                        <span class="tc-badge fail"><i class="fas fa-times"></i> Wrong Answer</span>
+                    {% endif %}
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span class="tc-time">{{ d.time }}s</span>
+                    <i class="fas fa-chevron-down tc-toggle" id="toggle-icon-{{ forloop.counter }}"></i>
+                </div>
+            </div>
+
+            <div class="tc-body" id="tc-body-{{ forloop.counter }}">
+
+                <!-- Input / Output grid -->
+                {% if d.verdict != "Runtime Error" and d.verdict != "TLE" %}
+                <div class="io-grid">
+                    <div class="io-block">
+                        <div class="io-label"><i class="fas fa-keyboard"></i> &nbsp;Input</div>
+                        <pre class="io-pre input-pre">{{ d.input|default:"(no input)" }}</pre>
+                    </div>
+                    <div class="io-block">
+                        <div class="io-label"><i class="fas fa-terminal"></i> &nbsp;Your Output</div>
+                        <pre class="io-pre output-pre">{{ d.output|default:"(no output)" }}</pre>
+                    </div>
+                </div>
+                {% if d.verdict != "Accepted" %}
+                <div class="io-grid" style="margin-top:10px;">
+                    <div class="io-block">
+                        <div class="io-label"><i class="fas fa-bullseye"></i> &nbsp;Expected Output</div>
+                        <pre class="io-pre expected-pre">{{ d.expected }}</pre>
+                    </div>
+                    <div class="io-block"></div>
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <!-- Error block -->
+                {% if d.error %}
+                <div class="error-block">
+                    <div class="io-label"><i class="fas fa-bug"></i> &nbsp;Error</div>
+                    <pre class="io-pre error-pre">{{ d.error }}</pre>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    {% empty %}
+        <p style="color:var(--dim);font-size:0.9rem;">No test case details available.</p>
+    {% endfor %}
+
+</div>
+
+<script>
+    function toggleTC(n) {
+        const body = document.getElementById('tc-body-' + n);
+        const icon = document.getElementById('toggle-icon-' + n);
+        body.classList.toggle('open');
+        icon.classList.toggle('open');
+    }
+
+    // Auto-expand failed test cases
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.tc-card.failed, .tc-card.error').forEach(function(card) {
+            const body = card.querySelector('.tc-body');
+            const icon = card.querySelector('.tc-toggle');
+            if (body) body.classList.add('open');
+            if (icon) icon.classList.add('open');
+        });
+    });
+</script>
+</body>
+</html>

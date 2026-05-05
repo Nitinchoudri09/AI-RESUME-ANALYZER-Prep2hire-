@@ -1,0 +1,131 @@
+<!-- In your <head>, replace fonts and add styles -->
+
+<!-- Google Fonts: Poppins -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f7fb;
+    padding: 2rem;
+  }
+  .question-card {
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 1.8rem;
+    box-shadow: 0 6px 12px rgb(0 0 0 / 0.08);
+    color: #333;
+    transition: transform 0.2s ease;
+  }
+  /* Different pastel backgrounds cycling by index */
+  .question-card:nth-child(3n+1) { background: #ffd8d8; }
+  .question-card:nth-child(3n+2) { background: #d8e8ff; }
+  .question-card:nth-child(3n+3) { background: #d8ffe1; }
+
+  .question-text {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 14px;
+  }
+
+  label {
+    cursor: pointer;
+    display: block;
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    background: white;
+    border: 2px solid transparent;
+    user-select: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+  }
+
+  label:hover {
+    box-shadow: 0 4px 10px rgb(0 0 0 / 0.15);
+  }
+
+  /* Hide default radio */
+  input[type="radio"] {
+    display: none;
+  }
+
+  /* When checked, show colored border and subtle shadow */
+  input[type="radio"]:checked + label {
+    border-color: #007bff;
+    background-color: #cce5ff;
+    box-shadow: 0 0 8px #007bffaa;
+    font-weight: 700;
+  }
+
+  button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    padding: 14px 36px;
+    border-radius: 12px;
+    border: none;
+    max-width: 320px;
+    width: 100%;
+    margin: 2rem auto 0;
+    display: block;
+    box-shadow: 0 8px 20px rgb(0 123 255 / 0.4);
+    transition: background-color 0.3s ease;
+  }
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  .questions-container {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.questions-column {
+  flex: 1;
+  min-width: 320px; /* keeps it responsive */
+}
+
+/* Optional: reduce margin between question cards when side-by-side */
+.questions-column .question-card {
+  margin-bottom: 1.4rem;
+}
+
+</style>
+
+
+<form method="post" class="container">
+  {% csrf_token %}
+  
+  <div class="questions-container">
+    <div class="questions-column">
+      {% for q in questions|slice:":9" %}
+      <div class="question-card">
+        <p class="question-text">{{ q.text }}</p>
+        {% for option in q.option_set.all %}
+          <input type="radio" id="q{{ q.id }}_opt{{ option.id }}" name="question_{{ q.id }}" value="{{ option.id }}">
+          <label for="q{{ q.id }}_opt{{ option.id }}">{{ option.text }}</label>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    
+    <div class="questions-column">
+      {% for q in questions|slice:"9:" %}
+      <div class="question-card">
+        <p class="question-text">{{ q.text }}</p>
+        {% for option in q.option_set.all %}
+          <input type="radio" id="q{{ q.id }}_opt{{ option.id }}" name="question_{{ q.id }}" value="{{ option.id }}">
+          <label for="q{{ q.id }}_opt{{ option.id }}">{{ option.text }}</label>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <button type="submit">Get My Career Path</button>
+</form>

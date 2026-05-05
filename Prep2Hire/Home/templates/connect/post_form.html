@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create a New Post</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9fafb;
+      color: #1e40af;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(30, 64, 175, 0.1);
+      padding: 36px 40px;
+    }
+
+    h2 {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700;
+      font-size: 2.4rem;
+      margin-top: 0;
+      margin-bottom: 36px;
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 12px;
+      text-align: center;
+      color: #1e40af;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    form p {
+      margin: 0;
+    }
+
+    input[type="text"],
+    textarea,
+    input[type="file"] {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      font-family: 'Poppins', sans-serif;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus,
+    textarea:focus,
+    input[type="file"]:focus {
+      border-color: #2563eb;
+      outline: none;
+    }
+
+    button[type="submit"] {
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      align-self: center;
+      width: 150px;
+    }
+    button[type="submit"]:hover {
+      background-color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Create a New Post</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Post</button>
+    </form>
+  </div>
+</body>
+</html>

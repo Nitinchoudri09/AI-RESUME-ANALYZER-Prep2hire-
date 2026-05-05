@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Career Roadmaps</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        /* Reset and base */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4fb;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Navbar styling */
+        nav {
+            background-color: #1e40af; /* medium dark blue */
+            color: white;
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(30, 58, 138, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 1.1px;
+            cursor: default;
+            user-select: none;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 24px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: #2563eb; /* lighter blue */
+            text-decoration: underline;
+        }
+
+        /* Container */
+        .container {
+            max-width:1300px;
+            width: 100%;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(30, 58, 138, 0.15);
+            margin: 40px auto 60px;
+        }
+
+        /* Heading */
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            color: #1e3a8a; /* dark blue */
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+            border-bottom: 3px solid #2563eb; /* bright blue underline */
+            padding-bottom: 10px;
+        }
+
+        /* Roadmap container and cards */
+        .roadmap-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+        }
+
+        .pdf-card {
+            background: #f9fbff;
+            border: 2px solid #1e40af; /* medium blue border */
+            border-radius: 10px;
+            width: 280px;
+            padding: 20px 24px;
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: default;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .pdf-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 36px rgba(30, 58, 138, 0.25);
+        }
+
+        .pdf-card h3 {
+            color: #0f172a; /* very dark blue/black */
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 16px;
+            text-transform: capitalize;
+            font-weight: 700;
+        }
+
+        .pdf-card p {
+            font-size: 0.95rem;
+            color: #334155; /* slate blue text */
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .pdf-card p a {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .pdf-card p a:hover {
+            color: #1e40af;
+        }
+
+        .pdf-card a button {
+            background-color: #1e40af;
+            border: none;
+            color: white;
+            padding: 12px 0;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .pdf-card a button:hover {
+            background-color: #2563eb;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .roadmap-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .pdf-card {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 14px 20px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Career Roadmaps</h1>
+        <div class="roadmap-container">
+            {% for roadmap in roadmaps|slice:":10" %}
+                <div class="pdf-card">
+                    {% with clean_name=roadmap|slice:"9:"|cut:".pdf" %}
+                        <h3>{{ clean_name|capfirst }}</h3>
+                        <p>
+                            If preview doesn’t work, 
+                            <a href="/media/{{ roadmap }}" target="_blank" rel="noopener noreferrer">open in new tab</a>
+                        </p>
+                        <a href="/media/{{ roadmap }}" download>
+                            <button>Download PDF</button>
+                        </a>
+                    {% endwith %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

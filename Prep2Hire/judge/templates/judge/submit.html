@@ -1,0 +1,779 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Code Pro – {{ problem.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap");
+
+        :root {
+            --bg:        #0d1117;
+            --panel:     #161b22;
+            --border:    #30363d;
+            --accent:    #2563eb;
+            --accent2:   #1e40af;
+            --green:     #22c55e;
+            --red:       #ef4444;
+            --yellow:    #f59e0b;
+            --text:      #c9d1d9;
+            --text-dim:  #6e7681;
+            --header-h:  52px;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; border:none; outline:none; }
+        body {
+            font-family: "Inter", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── Top Header ── */
+        .header {
+            height: var(--header-h);
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+        .header .logo {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header .logo i { color: var(--accent); }
+        .header .prob-title {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .header .prob-title span { color: var(--text); font-weight: 600; }
+
+        /* language badge */
+        .lang-badge {
+            background: rgba(37,99,235,0.15);
+            border: 1px solid rgba(37,99,235,0.4);
+            color: #60a5fa;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* Run button */
+        #run-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--green);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            font-family: "Inter", sans-serif;
+        }
+        #run-btn:hover { background: #16a34a; }
+        #run-btn:active { transform: scale(0.97); }
+        #run-btn.loading { background: var(--yellow); cursor: not-allowed; }
+
+        /* Submit button */
+        #submit-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: "Inter", sans-serif;
+        }
+        #submit-btn:hover { background: var(--accent2); }
+
+        /* ── Body Layout ── */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Left: Problem description */
+        .problem-panel {
+            width: 340px;
+            flex-shrink: 0;
+            background: var(--panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .panel-tab {
+            padding: 12px 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            background: var(--panel);
+        }
+        .problem-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .problem-scroll h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        .problem-scroll p {
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+
+        /* Center: Code Editor */
+        .editor-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .editor-topbar {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            height: 40px;
+            background: #1c2128;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            gap: 12px;
+        }
+        .editor-topbar .file-name { color: var(--text); font-weight: 500; }
+        #editor {
+            flex: 1;
+            font-size: 14px;
+            font-family: "Fira Code", monospace;
+        }
+
+        /* Right: Input + Output */
+        .io-panel {
+            width: 360px;
+            flex-shrink: 0;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            background: var(--panel);
+            overflow: hidden;
+        }
+        .io-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+        .io-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .io-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            background: rgba(37,99,235,0.06);
+        }
+
+        /* Stdin */
+        #stdin-panel { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+        #stdin-panel textarea {
+            flex: 1;
+            background: #0d1117;
+            color: #a5f3b5;
+            font-family: "Fira Code", monospace;
+            font-size: 13px;
+            padding: 14px;
+            resize: none;
+            border: none;
+            outline: none;
+            line-height: 1.6;
+        }
+        #stdin-panel textarea::placeholder { color: #3d444d; }
+
+        /* Output */
+        #output-panel { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+        #output-panel.visible { display: flex; }
+
+        .output-status-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: #1c2128;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.78rem;
+        }
+        .status-pill {
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+        .status-pill.success { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+        .status-pill.error   { background: rgba(239,68,68,0.15);  color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+        .status-pill.tle     { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+        .status-pill.running { background: rgba(96,165,250,0.15); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+        .time-label { color: var(--text-dim); margin-left: auto; }
+
+        .output-block {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .out-section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+        .out-pre {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-family: "Fira Code", monospace;
+            font-size: 12.5px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #c9d1d9;
+            border: 1px solid var(--border);
+            min-height: 40px;
+        }
+        .out-pre.stdout-pre { color: #a5f3b5; }
+        .out-pre.stderr-pre { color: #fca5a5; }
+
+        /* Stdin warning banner */
+        .stdin-warn {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 14px 0;
+            padding: 10px 14px;
+            background: rgba(245,158,11,0.12);
+            border: 1px solid rgba(245,158,11,0.4);
+            border-radius: 8px;
+            font-size: 0.78rem;
+            color: #f59e0b;
+            line-height: 1.5;
+        }
+        .stdin-warn.show { display: flex; }
+        .stdin-warn i { flex-shrink: 0; }
+
+        /* EOFError hint in stderr */
+        .eof-hint {
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+            border-radius: 8px;
+            font-size: 0.78rem;
+            color: #fbbf24;
+            line-height: 1.6;
+        }
+        .eof-hint strong { color: #f59e0b; display: block; margin-bottom: 4px; }
+
+        /* Spinner */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner {
+            display: inline-block;
+            width: 14px; height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+
+        /* hidden form for actual judge submit */
+        #judge-form { display: none; }
+        /* ── Smart Input Fields ── */
+        .smart-inputs-wrap {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .smart-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+        .smart-input-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .smart-input-label .idx {
+            background: rgba(37,99,235,0.2);
+            border: 1px solid rgba(37,99,235,0.35);
+            color: #93c5fd;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 10px;
+        }
+        .smart-input-field {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 13px;
+            color: #a5f3b5;
+            font-family: "Fira Code", monospace;
+            font-size: 13px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .smart-input-field:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        }
+        .smart-input-field::placeholder { color: #3d444d; }
+
+        /* fallback raw textarea */
+        .raw-stdin-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 14px;
+            gap: 6px;
+        }
+        .raw-stdin-label {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+        #stdin-raw {
+            flex: 1;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #a5f3b5;
+            font-family: "Fira Code", monospace;
+            font-size: 13px;
+            padding: 12px;
+            resize: none;
+            outline: none;
+            line-height: 1.6;
+        }
+        #stdin-raw:focus { border-color: var(--accent); }
+        #stdin-raw::placeholder { color: #3d444d; }
+
+        .no-input-msg {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--text-dim);
+            font-size: 0.82rem;
+            text-align: center;
+            padding: 20px;
+        }
+        .no-input-msg i { font-size: 2rem; opacity: 0.3; }
+
+    </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="header">
+    <div class="logo"><i class="fas fa-code"></i> Code Pro</div>
+    <div class="prob-title">Problem: <span>{{ problem.title }}</span></div>
+    <span class="lang-badge">Python 3</span>
+    <button id="run-btn" onclick="runCode()">
+        <i class="fas fa-play"></i> Run Code
+    </button>
+    <button id="submit-btn" onclick="submitJudge()">
+        <i class="fas fa-paper-plane"></i> Submit
+    </button>
+</div>
+
+<!-- ── Workspace ── -->
+<div class="workspace">
+
+    <!-- Problem Panel -->
+    <div class="problem-panel">
+        <div class="panel-tab"><i class="fas fa-book-open"></i> &nbsp;Description</div>
+        <div class="problem-scroll">
+            <h2>{{ problem.title }}</h2>
+            <p>{{ problem.description }}</p>
+        </div>
+    </div>
+
+    <!-- Editor Panel -->
+    <div class="editor-panel">
+        <div class="editor-topbar">
+            <span class="file-name">solution.py</span>
+            <span>|</span>
+            <span>Python 3</span>
+        </div>
+        <div id="editor"># Write your Python code here
+
+</div>
+    </div>
+
+    <!-- I/O Panel -->
+    <div class="io-panel">
+        <div class="io-tabs">
+            <div class="io-tab active" id="tab-stdin" onclick="switchTab('stdin')">
+                <i class="fas fa-keyboard"></i> &nbsp;Input (stdin)
+            </div>
+            <div class="io-tab" id="tab-output" onclick="switchTab('output')">
+                <i class="fas fa-terminal"></i> &nbsp;Output
+            </div>
+        </div>
+
+        <!-- Stdin -->
+        <div id="stdin-panel">
+            <div id="stdin-warn" class="stdin-warn">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Fill in the input fields below, then click <strong>Run Code</strong> again.</span>
+            </div>
+            <!-- Smart labeled fields (populated by JS) -->
+            <div id="smart-inputs-wrap" class="smart-inputs-wrap" style="display:none;"></div>
+            <!-- Fallback raw textarea -->
+            <div id="raw-stdin-wrap" class="raw-stdin-wrap" style="display:none;">
+                <div class="raw-stdin-label"><i class="fas fa-terminal"></i> &nbsp;Raw stdin (one value per line)</div>
+                <textarea id="stdin-raw" placeholder="Enter values here...
+One value per line."></textarea>
+            </div>
+            <!-- No-input message -->
+            <div id="no-input-msg" class="no-input-msg">
+                <i class="fas fa-check-circle"></i>
+                <span>Your code doesn't use <code>input()</code>.<br>Just click <strong>Run Code</strong>!</span>
+            </div>
+        </div>
+
+        <!-- Output -->
+        <div id="output-panel">
+            <div class="output-status-bar">
+                <span id="status-pill" class="status-pill running">Waiting...</span>
+                <span id="time-label" class="time-label"></span>
+            </div>
+            <div class="output-block">
+                <div>
+                    <div class="out-section-label">stdout</div>
+                    <pre id="stdout-box" class="out-pre stdout-pre">Run your code to see output here.</pre>
+                </div>
+                <div>
+                    <div class="out-section-label">stderr / errors</div>
+                    <pre id="stderr-box" class="out-pre stderr-pre"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden form for judge submit -->
+<form id="judge-form" method="post" action="{% url 'judge:submit_solution' slug=problem.slug %}">
+    {% csrf_token %}
+    <textarea name="code" id="judge-code"></textarea>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.23.4/ace.js"></script>
+<script>
+    // ── Init Ace ──
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/one_dark");
+    editor.session.setMode("ace/mode/python");
+    editor.setOptions({
+        fontSize: "14px",
+        fontFamily: "'Fira Code', monospace",
+        showPrintMargin: false,
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+        tabSize: 4,
+        useSoftTabs: true,
+    });
+
+    // ── Parse input() prompts from Python code ──
+    // Strips comment lines first so  # input()  doesn't create false fields
+    function stripComments(code) {
+        return code.split('\n')
+            .filter(line => !line.trimStart().startsWith('#'))
+            .join('\n');
+    }
+
+    function parseInputPrompts(code) {
+        const clean = stripComments(code);
+        const prompts = [];
+        // regex: input("...") or input('...')
+        const re = /\binput\s*\(\s*(?:f?["']([^"']*)["']|["']([^"']*)["'])\s*\)/g;
+        let m;
+        while ((m = re.exec(clean)) !== null) {
+            prompts.push((m[1] || m[2] || '').trim());
+        }
+        // How many total input() calls (including bare input())?
+        const reAll = /\binput\s*\(/g;
+        const total = (clean.match(reAll) || []).length;
+        // Fill any bare input() calls with generic label
+        while (prompts.length < total) {
+            prompts.push('');
+        }
+        return prompts;
+    }
+
+    // ── Render dynamic input fields ──
+    function renderInputFields(prompts) {
+        const wrap    = document.getElementById('smart-inputs-wrap');
+        const rawWrap = document.getElementById('raw-stdin-wrap');
+        const noInput = document.getElementById('no-input-msg');
+        wrap.innerHTML = '';
+
+        if (prompts.length === 0) {
+            wrap.style.display    = 'none';
+            rawWrap.style.display = 'none';
+            noInput.style.display = 'flex';
+            return;
+        }
+
+        noInput.style.display = 'none';
+        rawWrap.style.display = 'none';
+        wrap.style.display    = 'flex';
+
+        prompts.forEach(function(prompt, i) {
+            const label = prompt || `Input #${i + 1}`;
+            const group = document.createElement('div');
+            group.className = 'smart-input-group';
+            group.innerHTML = `
+                <div class="smart-input-label">
+                    <span class="idx">${i + 1}</span>
+                    ${escapeHtml(label)}
+                </div>
+                <input
+                    class="smart-input-field"
+                    data-index="${i}"
+                    type="text"
+                    placeholder="Enter value..."
+                    autocomplete="off"
+                />`;
+            wrap.appendChild(group);
+        });
+
+        // focus first field
+        const first = wrap.querySelector('.smart-input-field');
+        if (first) first.focus();
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Collect stdin from smart fields or raw textarea ──
+    function collectStdin() {
+        const wrap = document.getElementById('smart-inputs-wrap');
+        if (wrap.style.display !== 'none') {
+            const fields = wrap.querySelectorAll('.smart-input-field');
+            return Array.from(fields).map(f => f.value).join('\n');
+        }
+        return document.getElementById('stdin-raw').value.trim();
+    }
+
+    // ── Update stdin panel whenever code changes (debounced) ──
+    let debounceTimer;
+    function onCodeChange() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            const code = editor.getValue();
+            const prompts = parseInputPrompts(code);
+            renderInputFields(prompts);
+            // Hide warn banner on re-render
+            document.getElementById('stdin-warn').classList.remove('show');
+        }, 400);
+    }
+    editor.session.on('change', onCodeChange);
+    // Run once on load
+    onCodeChange();
+
+    // ── Tab switching ──
+    function switchTab(tab) {
+        const stdinPanel  = document.getElementById('stdin-panel');
+        const outputPanel = document.getElementById('output-panel');
+        const tabStdin    = document.getElementById('tab-stdin');
+        const tabOutput   = document.getElementById('tab-output');
+
+        if (tab === 'stdin') {
+            stdinPanel.style.display = 'flex';
+            outputPanel.classList.remove('visible');
+            tabStdin.classList.add('active');
+            tabOutput.classList.remove('active');
+        } else {
+            stdinPanel.style.display = 'none';
+            outputPanel.classList.add('visible');
+            tabStdin.classList.remove('active');
+            tabOutput.classList.add('active');
+        }
+    }
+
+    // ── Run Code via API ──
+    async function runCode() {
+        const btn  = document.getElementById('run-btn');
+        const code = editor.getValue();
+        const warn = document.getElementById('stdin-warn');
+
+        if (!code.trim()) {
+            alert("Please write some code first!");
+            return;
+        }
+
+        // Check if any smart field is required but empty
+        const wrap = document.getElementById('smart-inputs-wrap');
+        if (wrap.style.display !== 'none') {
+            const fields = wrap.querySelectorAll('.smart-input-field');
+            const allFilled = Array.from(fields).every(f => f.value.trim() !== '');
+            if (!allFilled) {
+                warn.classList.add('show');
+                switchTab('stdin');
+                // highlight empty fields
+                fields.forEach(f => {
+                    if (!f.value.trim()) {
+                        f.style.borderColor = '#ef4444';
+                        f.style.boxShadow   = '0 0 0 3px rgba(239,68,68,0.2)';
+                        setTimeout(() => { f.style.borderColor=''; f.style.boxShadow=''; }, 2500);
+                    }
+                });
+                const first = Array.from(fields).find(f => !f.value.trim());
+                if (first) first.focus();
+                return;
+            }
+        }
+        warn.classList.remove('show');
+
+        const stdin = collectStdin();
+
+        // Show loading state
+        btn.classList.add('loading');
+        btn.innerHTML = '<span class="spinner"></span> Running...';
+
+        // Switch to output tab
+        switchTab('output');
+        document.getElementById('status-pill').className = 'status-pill running';
+        document.getElementById('status-pill').textContent = '⏳ Running...';
+        document.getElementById('time-label').textContent = '';
+        document.getElementById('stdout-box').textContent = '';
+        const stderrBox = document.getElementById('stderr-box');
+        stderrBox.textContent = '';
+        const oldHint = document.getElementById('eof-hint-box');
+        if (oldHint) oldHint.remove();
+
+        try {
+            const resp = await fetch("{% url 'judge:run_code' %}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code: code, stdin: stdin }),
+            });
+
+            const data = await resp.json();
+
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i class="fas fa-play"></i> Run Code';
+
+            document.getElementById('stdout-box').textContent = data.stdout || "(no output)";
+            stderrBox.textContent = data.stderr || "";
+
+            // EOFError hint
+            if (data.stderr && data.stderr.includes('EOFError')) {
+                const hint = document.createElement('div');
+                hint.id = 'eof-hint-box';
+                hint.className = 'eof-hint';
+                hint.innerHTML = `<strong>💡 Why EOFError?</strong>
+                    Your code called <code>input()</code> but there was not enough stdin data.<br>
+                    👉 Go back to <strong>Input (stdin)</strong> tab and fill all the fields.`;
+                stderrBox.after(hint);
+            }
+
+            const pill = document.getElementById('status-pill');
+            if (data.exit_code === null) {
+                pill.className = 'status-pill tle';
+                pill.textContent = '⏱ Time Limit Exceeded';
+            } else if (data.exit_code !== 0) {
+                pill.className = 'status-pill error';
+                pill.textContent = '✗ Runtime Error';
+            } else {
+                pill.className = 'status-pill success';
+                pill.textContent = '✓ Success';
+            }
+
+            document.getElementById('time-label').textContent = `${data.time_taken}s`;
+
+        } catch (err) {
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i class="fas fa-play"></i> Run Code';
+            document.getElementById('stdout-box').textContent = '';
+            stderrBox.textContent = 'Network error: ' + err.message;
+            const pill = document.getElementById('status-pill');
+            pill.className = 'status-pill error';
+            pill.textContent = '✗ Network Error';
+        }
+    }
+
+    // ── Submit to Judge ──
+    function submitJudge() {
+        document.getElementById('judge-code').value = editor.getValue();
+        document.getElementById('judge-form').submit();
+    }
+
+    // Keyboard shortcut: Ctrl+Enter = Run
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            runCode();
+        }
+    });
+</script>
+
+</body>
+</html>

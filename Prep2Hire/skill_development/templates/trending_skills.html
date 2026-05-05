@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Trending Technical Skills</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@700&display=swap');
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9fafb;
+    color: #1e40af;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 960px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.1);
+    padding: 36px 40px;
+  }
+
+  h2 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 2.4rem;
+    margin-top: 0;
+    margin-bottom: 36px;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 12px;
+    text-align: center;
+    color: #1e40af;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .skill-card {
+    background: #e3f2fd;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(30, 64, 175, 0.15);
+    padding: 24px 20px;
+    text-align: center;
+    color: #1e40af;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .skill-card:hover,
+  .skill-card:focus {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(30, 64, 175, 0.3);
+    outline: none;
+    text-decoration: none;
+  }
+
+  .skill-card h5 {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 14px;
+  }
+
+  .skill-card p {
+    font-size: 1rem;
+    color: #334155;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔥 Trending Technical Skills from Job Descriptions</h2>
+    <div class="skills-grid">
+      {% for skill in skills %}
+        <a href="#" class="skill-card" tabindex="0">
+          <h5>{{ skill.name }}</h5>
+          <p>{{ skill.message }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>
