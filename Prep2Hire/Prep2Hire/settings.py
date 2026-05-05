@@ -30,7 +30,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-+&0#=zd20x+xffu#$7jdu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = [
+    "ai-resume-analyzer-prep2hire-3.onrender.com",
+    "127.0.0.1",
+    "localhost"
+]
 
 
 
@@ -145,8 +149,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
