@@ -109,6 +109,10 @@
       {{ form.as_p }}
       <button type="submit">Log In</button>
     </form>
+    <p class="signup-link" style="margin-top: 1rem;">
+      <a href="{% url 'forgot_password' %}">Forgot Password?</a>
+    </p>
+
     <p class="signup-link">Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
   </div>
 

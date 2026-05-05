@@ -14,5 +14,9 @@ urlpatterns = [
     path('connect/new/', views.create_post, name='create_post'),
     path('connect/delete/<int:post_id>/', views.delete_post, name='delete_post'),
     path('connect/like/<int:post_id>/', views.like_post, name='like_post'),
-    path('dashboard/', views.dashboard, name='dashboard')
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
+    path('activate/<uidb64>/<token>/', views.activate, name='activate'),
 ]
+
+
