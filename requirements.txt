@@ -1,5 +1,8 @@
-Django==5.2.4
+Django
 gunicorn
-Pillow
-requests
 whitenoise
+requests
+Pillow
+dj-database-url
+psycopg2-binary
+python-dotenv
