@@ -6,3 +6,4 @@ Pillow
 dj-database-url
 psycopg2-binary
 python-dotenv
+razorpay==1.4.2
