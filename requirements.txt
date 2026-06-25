@@ -9,4 +9,4 @@ python-dotenv
 razorpay==1.4.2
 setuptools==80.9.0
 wheel
-
+setuptools==80.9.0
